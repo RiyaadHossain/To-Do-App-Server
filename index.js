@@ -24,14 +24,6 @@ async function run(){
       res.send(result)
     })
 
-    // GET API
-    app.get("/task/:id", async(req, res)=>{
-      const id = req.params.id
-      const filter = {_id: ObjectId(id)}
-      const result = await taskCollection.findOne(filter)
-      res.send(result)
-    })
-
     // PUT API
     app.put("/task", async(req, res) =>{
       const done = req.body
