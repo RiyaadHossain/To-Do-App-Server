@@ -1,4 +1,5 @@
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const port = process.env.PORT || 5000
@@ -9,7 +10,7 @@ app.use(cors())
 app.use(express.json())
 
 
-const uri = "mongodb+srv://mongodb1:wy2nMgYmcRbCyGgb@mycluster.rn7n6.mongodb.net/?retryWrites=true&w=majority";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@mycluster.rn7n6.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 async function run(){
@@ -18,9 +19,14 @@ async function run(){
     const taskCollection = client.db("sample_mflix").collection("movies");
 
     // GET API
-    app.get("/task", async(req, res)=>{
+    app.get("/tasks", async(req, res)=>{
       const result = await taskCollection.find().toArray()
       res.send(result)
+    })
+
+    // PUT API
+    app.put("/task", async(req, res) =>{
+      const done = req.body
     })
 
     // POST API
