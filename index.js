@@ -16,11 +16,19 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run(){
   try{
     await client.connect();
-    const taskCollection = client.db("sample_mflix").collection("movies");
+    const taskCollection = client.db("AllTasks").collection("Task");
 
     // GET API
     app.get("/tasks", async(req, res)=>{
       const result = await taskCollection.find().toArray()
+      res.send(result)
+    })
+
+    // GET API
+    app.get("/task/:id", async(req, res)=>{
+      const id = req.params.id
+      const filter = {_id: ObjectId(id)}
+      const result = await taskCollection.findOne(filter)
       res.send(result)
     })
 
@@ -30,11 +38,35 @@ async function run(){
     })
 
     // POST API
-    app.post('/addtask', async(req, res) =>{
+    app.post("/addtask", async(req, res) =>{
       const task = req.body
       const result = await taskCollection.insertOne(task)
       res.send(result)
     })
+
+    // DELETE API
+    app.delete("/task/:id", async(req, res) =>{
+      const id = req.params.id
+      const filter = {_id: ObjectId(id)}
+      const result = await taskCollection.deleteOne(filter)
+      res.send(result)
+    })
+
+    // PUT API
+    app.put("/task/:id", async(req, res) => {
+      const id = req.params.id
+      const done = req.body
+      const filter = {_id: ObjectId(id)}
+      console.log(done);
+      const updatedDoc = {
+        $set: {
+          done
+        }
+      }
+      const result = await taskCollection.updateOne(filter, updatedDoc)
+      res.send(result)
+    })
+
   }
   finally{
     // Nothing Here
