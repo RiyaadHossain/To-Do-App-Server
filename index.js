@@ -19,8 +19,10 @@ async function run(){
     const taskCollection = client.db("AllTasks").collection("Task");
 
     // GET API
-    app.get("/tasks", async(req, res)=>{
-      const result = await taskCollection.find().toArray()
+    app.get("/tasks/:email", async(req, res)=>{
+      const email = req.params.email
+      const filter = {email: email}
+      const result = await taskCollection.find(filter).toArray()
       res.send(result)
     })
 
@@ -49,7 +51,6 @@ async function run(){
       const id = req.params.id
       const done = req.body
       const filter = {_id: ObjectId(id)}
-      console.log(done);
       const updatedDoc = {
         $set: {
           done
